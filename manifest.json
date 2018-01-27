@@ -1,0 +1,21 @@
+{
+  "name": "Distance from Home",
+  "short_name": "Distance",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "/",
+  "theme_color": "#8888ff",
+  "background_color": "#aaaaff",
+  "icons": [
+    {
+      "src": "imgs/icon-60.png",
+      "sizes": "60x60",
+      "type": "image/png"
+    },
+    {
+      "src": "imgs/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ]
+}
