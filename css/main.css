@@ -105,6 +105,7 @@ body {
   align-items: center;
   justify-content: space-between;
   border-top: 1px solid #cecece;
+  cursor: pointer;
 }
 
 .node_wrapper.active {

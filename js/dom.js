@@ -44,4 +44,3 @@ function renderDropdown(obj, dom, isInit) {
     });
   }
 }
-

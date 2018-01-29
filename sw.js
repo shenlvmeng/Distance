@@ -6,6 +6,7 @@ const CACHE_LIST = [
   'index.html',
   'js/app.js',
   'js/index.js',
+  'js/dom.js',
   'css/main.css',
   'favicon.ico',
   'imgs/icon-60.png',

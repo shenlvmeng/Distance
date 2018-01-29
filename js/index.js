@@ -7,6 +7,8 @@
   let map = null;
   // 导入持久化的Beacon点
   let beaconNodes = [];
+  // 存储BeaconNode对应的marker
+  let beaconMarkers = {};
   // 序列号，永远是第一个可用的id
   let seq = 1;
   // 在搜索时暂停
@@ -154,9 +156,11 @@
     mark.addEventListener('click', event => {
       if (win.confirm(`确认要删除Beacon:${mark.getLabel().getTitle()}`)) {
         map.removeOverlay(mark);
+        delete beaconMarkers[id];
         removeFromBeacon(id);
       }
     });
+    beaconMarkers[id] = mark;
     map.addOverlay(mark);
     seq = id + 1;
   }
@@ -164,7 +168,25 @@
   function initDropdown() {
     paintDropdown(true);
     // 事件监听
-    // ...
+    const dropdown = doc.getElementById("dropdown");
+    dropdown.addEventListener("click", event => {
+      const nid = event.target.parentNode.dataset.nid || event.target.dataset.nid;
+      const node = beaconNodes.find(node => node.id == nid);
+      if (event.target.tagName.toLowerCase() === "div") {
+        if (node) {
+          const prev = beaconNodes.find(node => node.isActive);
+          if (prev) {
+            prev.isActive = false;
+            beaconMarkers[prev.id].setIcon(new BMap.Icon("imgs/location-2.png", new BMap.Size(40, 40)));
+          }
+          node.isActive = true;
+          paintDropdown();
+          beaconMarkers[nid].setIcon(new BMap.Icon("imgs/location-1.png", new BMap.Size(40, 40)));
+        }
+      } else {
+        node && map.panTo(new BMap.Point(node.point.lng, node.point.lat));
+      }
+    });
   }
 
   function paintDropdown(isInit) {
