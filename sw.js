@@ -10,6 +10,11 @@ const CACHE_LIST = [
   'favicon.ico',
   'imgs/icon-60.png',
   'imgs/icon-144.png',
+  'imgs/circle.png',
+  'imgs/down.png',
+  'imgs/location-1.png',
+  'imgs/location-2.png',
+  'imgs/magnify.png',
   'manifest.json'
 ];
 

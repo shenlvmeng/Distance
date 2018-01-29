@@ -12,6 +12,7 @@ body {
   height: 100%;
   margin: 0; 
   padding: 0;
+  font-family: 'Microsoft Yahei', 'helvetica neue', arial, sans-serif;
 }
 
 #map {
@@ -20,6 +21,8 @@ body {
 
 .panel {
   display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
   justify-content: space-between;
   position: absolute;
   top: 0;
@@ -30,6 +33,7 @@ body {
 .panel .search {
   display: flex;
   width: 284px;
+  margin-bottom: 15px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
@@ -55,4 +59,103 @@ body {
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
   outline: none;
+}
+
+.update {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  width: 120px;
+  text-align: center;
+  line-height: 2.5;
+  font-size: 14px;
+  color: #6e6e6e;
+  background-color: #fff;
+  transform: translateX(-50%);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  cursor: pointer;
+}
+
+.nodes {
+  width: 250px;
+  border: 1px solid #cecece;
+  border-radius: 3px;
+  background-color: #efefef;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.dropdown_container .dropdown {
+  overflow: hidden;
+  transition: height 1.5s;
+}
+
+.dropdown_container.hide .dropdown {
+  height: 0;
+}
+
+.dropdown > div{
+  padding: 0 5px;
+  line-height: 32px;
+  font-size: 12px;
+  color: #5a5a5a;
+}
+
+.node_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #cecece;
+}
+
+.node_wrapper.active {
+  color: #4bb505;
+}
+
+.node_wrapper span:first-child {
+  font-weight: bold;
+}
+
+.node_wrapper .node-tag {
+  flex: 1;
+  padding: 0 5px;
+  max-width: 162px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.node_wrapper .operateBtn {
+  height: 22px;
+  line-height: 22px;
+  padding: 0 5px;
+  border: 1px solid #5a5a5a;
+  border-radius: 4px; 
+  cursor: pointer;
+}
+
+.node_wrapper .operateBtn.active {
+  color: #d81e06;
+  border-color: #d81e06;
+}
+
+.nodes .firstline {
+  display: flex;
+  justify-content: space-between;
+  height: 32px;
+  border-bottom: 1px solid #cecece;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  cursor: pointer;
+}
+
+.nodes .firstline span {
+  flex: 1;
+}
+
+.nodes .firstline .downangle {
+  width: 15px;
+  background: url(../imgs/down.png);
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: 0 10px;
 }
