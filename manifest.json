@@ -3,7 +3,7 @@
   "short_name": "Distance",
   "display": "standalone",
   "orientation": "portrait",
-  "start_url": "/",
+  "start_url": "index.html",
   "theme_color": "#8888ff",
   "background_color": "#aaaaff",
   "icons": [

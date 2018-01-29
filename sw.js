@@ -1,5 +1,5 @@
 // 当前缓存版本
-const CACHE_STORAGE_KEY = 'v2';
+const CACHE_STORAGE_KEY = 'v1';
 
 const CACHE_LIST = [
   '/',
