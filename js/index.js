@@ -20,10 +20,12 @@
 
   // 为了能成功调用到callback
   win.init = () => {
+    // 先清除提示图层
+    doc.getElementById('offline').className = "";
     map = new BMap.Map('map');
     let lastPoint = null;
     try {
-      let point = JSON.parse(localStorage.getItem(POS_STORAGE_KEY))
+      let point = JSON.parse(localStorage.getItem(POS_STORAGE_KEY));
       lastPoint = new BMap.Point(point.lng, point.lat);
     } catch(e) {
       console.warn(e);
