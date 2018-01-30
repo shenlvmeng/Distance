@@ -1,6 +1,7 @@
 (function(win, doc){
   const url4PC = "https://api.map.baidu.com/api?v=2.0&ak=K4lj4WauSIagEIiRkVY0lVt6IGgR6WM4&callback=init";
   const STORAGE_KEY = "Distance_beacon_nodes";
+  const POS_STORAGE_KEY = "Distance_last_point";
   const init = win.init;
   const INTERVAL = 3000;
 
@@ -14,11 +15,21 @@
   // 在搜索时暂停
   let isUpdate = true;
   let timer = null;
+  // 最后一次坐标
+  let lastPoint = null;
 
   // 为了能成功调用到callback
   win.init = () => {
     map = new BMap.Map('map');
-    map.centerAndZoom("北京", 12);
+    let lastPoint = null;
+    try {
+      let point = JSON.parse(localStorage.getItem(POS_STORAGE_KEY))
+      lastPoint = new BMap.Point(point.lng, point.lat);
+    } catch(e) {
+      console.warn(e);
+      lastPoint = "北京";
+    }
+    map.centerAndZoom(lastPoint, 12);
     map.enableScrollWheelZoom(true);
     initMap();
     getCurrentLocation();
@@ -31,9 +42,14 @@
     const location = new BMap.Geolocation();
     location.getCurrentPosition(res => {
       if (res) {
+        lastPoint = res.point;
+        localStorage.setItem(POS_STORAGE_KEY, JSON.stringify(lastPoint));
         // 自定义图标
         const icon = new BMap.Icon("imgs/circle.png", new BMap.Size(40, 40));
         const mark = new BMap.Marker(res.point, { icon });
+        // 计算距离
+        paintDistance(res.point);
+        // 添加图标
         map.clearOverlays();
         map.addOverlay(mark);
         map.panTo(res.point);
@@ -41,9 +57,31 @@
           timer = setTimeout(getCurrentLocation, INTERVAL);
         }
       } else {
-        alert('无法获取当前位置');
+        alert('Sorry，暂时无法获取当前位置');
       }
     },{enableHighAccuracy: true});
+  }
+
+  // 绘制距离
+  function paintDistance(currentPoint) {
+    let info;
+    let target = beaconNodes.find(node => node.isActive);
+    if (!target || !currentPoint) {
+      info = "N/A , 未知方向";
+    } else {
+      let distance = map.getDistance(currentPoint, target.point) || "N/A";
+      if (distance > 10000) {
+        distance = `${(distance / 1000).toFixed(2)}km`;
+      } else if (distance > 100) {
+        distance = `${distance.toFixed(0)}m`;
+      } else {
+        distance = `就在附近...`
+      }
+      // 工具函数位于utils.js
+      const deg = getDirection(target.point, currentPoint);
+      info = `<span>#${target.id} </span> ${distance} , ${deg}点钟方向`
+    }
+    doc.getElementById('distance').innerHTML = info;
   }
 
   // 搜索目标位置
@@ -131,7 +169,14 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(beaconNodes));
   }
 
-  function removeFromBeacon(id) {
+  function editToBeacons(id, newProps) {
+    const index = beaconNodes.findIndex(node => node.id == id);
+    Object.assign(beaconNodes[index], newProps);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(beaconNodes));
+    // 不是所有的属性更改都有重绘，交给调用者处理重绘
+  }
+
+  function removeFromBeacons(id) {
     if (!beaconNodes.length) {
       return;
     }
@@ -153,12 +198,17 @@
     });
     mark.setLabel(label); 
     mark.getLabel().setTitle(tag);
+    mark.enableDragging();
     mark.addEventListener('click', event => {
       if (win.confirm(`确认要删除Beacon:${mark.getLabel().getTitle()}`)) {
         map.removeOverlay(mark);
         delete beaconMarkers[id];
-        removeFromBeacon(id);
+        removeFromBeacons(id);
       }
+    });
+    mark.addEventListener('dragend', event => {
+      editToBeacons(id, { point: event.point });
+      paintDistance(lastPoint);
     });
     beaconMarkers[id] = mark;
     map.addOverlay(mark);
@@ -167,6 +217,7 @@
 
   function initDropdown() {
     paintDropdown(true);
+    paintDistance();
     // 事件监听
     const dropdown = doc.getElementById("dropdown");
     dropdown.addEventListener("click", event => {
@@ -176,12 +227,15 @@
         if (node) {
           const prev = beaconNodes.find(node => node.isActive);
           if (prev) {
-            prev.isActive = false;
+            editToBeacons(prev.id, {isActive: false});
             beaconMarkers[prev.id].setIcon(new BMap.Icon("imgs/location-2.png", new BMap.Size(40, 40)));
           }
-          node.isActive = true;
+          if (!prev || prev.id != nid) {
+            editToBeacons(node.id, {isActive: true});
+            beaconMarkers[nid].setIcon(new BMap.Icon("imgs/location-1.png", new BMap.Size(40, 40)));
+          }
           paintDropdown();
-          beaconMarkers[nid].setIcon(new BMap.Icon("imgs/location-1.png", new BMap.Size(40, 40)));
+          paintDistance(lastPoint);
         }
       } else {
         node && map.panTo(new BMap.Point(node.point.lng, node.point.lat));
@@ -190,7 +244,7 @@
   }
 
   function paintDropdown(isInit) {
-    // 位于dom.js中
+    // 位于utils.js中
     renderDropdown && renderDropdown(beaconNodes, document.getElementById('dropdown'), isInit);
   }
 

@@ -19,6 +19,25 @@ body {
   height: 100%;
 }
 
+#distance {
+  padding-left: 3px;
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#distance span {
+  margin-right: 5px;
+  padding-right: 2px;
+  border-right: 1px solid #ddd;
+  max-width: 35px;
+  color: #aaa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .panel {
   display: flex;
   flex-flow: row wrap;
@@ -159,4 +178,11 @@ body {
   background-size: 80%;
   background-repeat: no-repeat;
   background-position: 0 10px;
+  transform: rotate(180deg);
+  transform-origin: 40% 50%;
+  transition: all .3s;
+}
+
+.hide .firstline .downangle {
+  transform: rotate(0deg);
 }

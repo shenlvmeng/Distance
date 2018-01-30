@@ -44,3 +44,31 @@ function renderDropdown(obj, dom, isInit) {
     });
   }
 }
+
+/*
+ * 根据两点坐标计算近似角度值
+ */
+
+function getDirection(p1, p2) {
+  const pi = Math.PI;
+  const [x2, y2, x1, y1] = [p1.lng, p1.lat, p2.lng, p2.lat];
+  let rad = Math.atan2(y2 - y1, x2 - x1);
+  let absRad = Math.abs(rad);
+  let clockPointer;
+  if (absRad < pi / 12) {
+    clockPointer = 3;
+  } else if (absRad < pi / 4) {
+    clockPointer = rad > 0 ? 2 : 4;
+  } else if (absRad < pi * 5 / 12) {
+    clockPointer = rad > 0 ? 1 : 5;
+  } else if (absRad < pi * 7 / 12) {
+    clockPointer = rad > 0 ? 12 : 6;
+  } else if (absRad < pi * 3 / 4) {
+    clockPointer = rad > 0 ? 11 : 7;
+  } else if (absRad < pi * 11 / 12) {
+    clockPointer = rad > 0 ? 10 : 8;
+  } else {
+    clockPointer = 9;
+  }
+  return clockPointer;
+}
