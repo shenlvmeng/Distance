@@ -2,7 +2,6 @@
   const url4PC = "https://api.map.baidu.com/api?v=2.0&ak=K4lj4WauSIagEIiRkVY0lVt6IGgR6WM4&callback=init";
   const STORAGE_KEY = "Distance_beacon_nodes";
   const POS_STORAGE_KEY = "Distance_last_point";
-  const init = win.init;
   const INTERVAL = 3000;
 
   let map = null;
@@ -20,8 +19,16 @@
 
   // 为了能成功调用到callback
   win.init = () => {
-    // 先清除提示图层
+    // 先清除提示图层，设置断网、联网提醒
     doc.getElementById('offline').className = "";
+    win.addEventListener('online', () => {
+      doc.getElementById('offline').className = "";
+      getCurrentLocation();
+    });
+    win.addEventListener('offline', () => {
+      doc.getElementById('offline').className = "offline";
+    })
+
     map = new BMap.Map('map');
     let lastPoint = null;
     try {
@@ -36,7 +43,6 @@
     initMap();
     getCurrentLocation();
     initSearchLocation();
-    win.init = init;
   } 
 
   // 获取当前位置
